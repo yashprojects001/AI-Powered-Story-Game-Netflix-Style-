@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AI Story Game</title>
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: black;
+        color: white;
+    }
+
+    .container {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 20px;
+    }
+
+    .story {
+        font-size: 22px;
+        line-height: 1.6;
+        max-width: 800px;
+    }
+
+    .choices {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    button {
+        padding: 12px;
+        background: #111;
+        border: 1px solid white;
+        color: white;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    button:hover {
+        background: white;
+        color: black;
+    }
+
+    .title {
+        font-size: 30px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <div>
+        <div class="title">🎬 AI Story Game</div>
+        <div id="story" class="story"></div>
+    </div>
+
+    <div id="choices" class="choices"></div>
+</div>
+
+<script>
+
+// STORY DATA (branching)
+const storyData = {
+    start: {
+        text: "You wake up in a dark room. There is a door to your left and a window to your right.",
+        choices: [
+            { text: "Open the door", next: "door" },
+            { text: "Look out the window", next: "window" }
+        ]
+    },
+
+    door: {
+        text: "The door creaks open. A long hallway stretches ahead. You hear footsteps.",
+        choices: [
+            { text: "Walk forward", next: "hallway" },
+            { text: "Go back", next: "start" }
+        ]
+    },
+
+    window: {
+        text: "You see a city covered in fog. Suddenly, something moves behind you.",
+        choices: [
+            { text: "Turn around", next: "monster" },
+            { text: "Jump out", next: "jump" }
+        ]
+    },
+
+    hallway: {
+        text: "The footsteps get louder. A shadow appears at the end.",
+        choices: [
+            { text: "Run", next: "run" },
+            { text: "Hide", next: "hide" }
+        ]
+    },
+
+    monster: {
+        text: "A creature lunges at you. You barely escape.",
+        choices: [
+            { text: "Fight", next: "fight" },
+            { text: "Run away", next: "run" }
+        ]
+    },
+
+    jump: {
+        text: "You jump… and wake up. It was a dream.",
+        choices: [
+            { text: "Restart", next: "start" }
+        ]
+    },
+
+    run: {
+        text: "You run endlessly… until everything fades to black.",
+        choices: [
+            { text: "Restart", next: "start" }
+        ]
+    },
+
+    hide: {
+        text: "You hide. The shadow passes. You survive… for now.",
+        choices: [
+            { text: "Continue", next: "start" }
+        ]
+    },
+
+    fight: {
+        text: "You fight bravely… but the creature is too strong.",
+        choices: [
+            { text: "Restart", next: "start" }
+        ]
+    }
+};
+
+// CURRENT STATE
+let currentScene = "start";
+
+// DOM ELEMENTS
+const storyDiv = document.getElementById("story");
+const choicesDiv = document.getElementById("choices");
+
+// FUNCTION TO RENDER SCENE
+function renderScene(sceneKey) {
+    const scene = storyData[sceneKey];
+
+    storyDiv.innerText = scene.text;
+    choicesDiv.innerHTML = "";
+
+    scene.choices.forEach(choice => {
+        const btn = document.createElement("button");
+        btn.innerText = choice.text;
+
+        btn.onclick = () => {
+            currentScene = choice.next;
+            renderScene(currentScene);
+        };
+
+        choicesDiv.appendChild(btn);
+    });
+}
+
+// START GAME
+renderScene(currentScene);
+
+</script>
+
+</body>
+</html>
